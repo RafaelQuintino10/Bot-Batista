@@ -5,6 +5,8 @@ import customtkinter as ctk
 import threading
 import asyncio
 from bot_batista import main  
+import sys
+import os
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("dark-blue")
@@ -15,7 +17,13 @@ thread_bot = None
 janela = ctk.CTk()
 janela.title('BOT SINAIS RED')
 janela.geometry("400x250")
-janela.iconbitmap("bot_icon.ico")
+
+if getattr(sys, 'frozen', False):
+    icon_path = os.path.join(sys._MEIPASS, 'bot_icon.ico')
+else:
+    icon_path = os.path.abspath("bot_icon.ico")
+
+janela.iconbitmap(icon_path)
 
 status_label = ctk.CTkLabel(janela, text="Bot não iniciado.", text_color="white")
 status_label.pack(pady=10)
@@ -59,5 +67,16 @@ botao_iniciar.pack(pady=10)
 
 botao_parar = ctk.CTkButton(janela, text='Parar Bot', command=parar_bot)
 botao_parar.pack(pady=10)
+
+rodape = ctk.CTkLabel(
+    janela,
+    text="Desenvolvido por @Front Dev Studio",
+    text_color="#9FBCE7",  # branco neon levemente azulado
+    font=ctk.CTkFont(size=12, weight="normal")
+)
+rodape.pack(side="bottom", pady=5)
+
+
+
 
 janela.mainloop()

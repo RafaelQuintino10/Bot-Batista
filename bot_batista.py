@@ -3,37 +3,38 @@
 from datetime import datetime, timedelta
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, ContextTypes, CommandHandler
-import sqlite3
-import asyncio
+
+
 
 # Conecta (ou cria) o banco de dados chamado "exemplo.db"
-conn = sqlite3.connect("grupos.db")
-cursor = conn.cursor()
+# conn = sqlite3.connect("grupos.db")
+# cursor = conn.cursor()
 
 # ==== CONFIGURAÇÕES ====
 ID_GRUPO_ORIGEM = -1002490922945
 # ID_GRUPO_DESTINO = 7450049318
 ID_GRUPO_DESTINO = -4819929041
 ID_CANAL_DESTINO = -1002642790476
+ID_CANAL_H3 = -1002807164349
 DATA_VENCIMENTO = datetime(2025, 6, 28)
 
-# ==== COMANDO /inserir ====
-async def inserir(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.message.chat_id
-    chat_name = update.message.chat.title
-    cursor.execute("INSERT INTO grupos_sinais (nome, chat_id) VALUES (?, ?)", (chat_name, chat_id))
-    conn.commit()
-    print(f'Grupo - {chat_name} inserido na tabela...')
+# # ==== COMANDO /inserir ====
+# async def inserir(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     chat_id = update.message.chat_id
+#     chat_name = update.message.chat.title
+#     cursor.execute("INSERT INTO grupos_sinais (nome, chat_id) VALUES (?, ?)", (chat_name, chat_id))
+#     conn.commit()
+#     print(f'Grupo - {chat_name} inserido na tabela...')
 
 # ==== FUNÇÃO DE MONITORAMENTO ====
 async def monitorar_mensagem(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    agora = datetime.now()
-    if agora > DATA_VENCIMENTO:
-        await context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text="⛔ Esta versão demo expirou. Entre em contato para renovação."
-        )
-        return
+    # agora = datetime.now()
+    # if agora > DATA_VENCIMENTO:
+    #     await context.bot.send_message(
+    #         chat_id=update.message.chat_id,
+    #         text="⛔ Esta versão demo expirou. Entre em contato para renovação."
+    #     )
+    #     return
 
     mensagem = update.message.text
     print(mensagem.split())
@@ -53,7 +54,7 @@ async def monitorar_mensagem(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
         await context.bot.send_message(
-            chat_id=ID_CANAL_DESTINO,
+            chat_id=ID_CANAL_H3,
             text=resposta,
             parse_mode="Markdown"
         )
@@ -65,7 +66,7 @@ async def main():
     # Token bot sinais red
     app = Application.builder().token('7743797024:AAF9wnhFf7fEpdzauVY5xzJOXpcsm30IEkI').build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, monitorar_mensagem))
-    app.add_handler(CommandHandler('inserir', inserir))
+    # app.add_handler(CommandHandler('inserir', inserir))
     print("🤖 Bot está rodando...")
     # app.run_polling()
     await app.initialize()
