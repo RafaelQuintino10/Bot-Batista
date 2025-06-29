@@ -3,15 +3,14 @@
 from datetime import datetime, timedelta
 import re
 from telegram import Update
-from telegram.ext import Application, MessageHandler, filters, ContextTypes, CommandHandler
-
-
+from telegram.ext import Application, MessageHandler, filters, ContextTypes
+from telegram.constants import UpdateType
 # ==== CONFIGURAÇÕES ====
 ID_GRUPO_ORIGEM = -1002490922945
 # ID_GRUPO_DESTINO = 7450049318
 ID_GRUPO_DESTINO = -4819929041
 ID_CANAL_DESTINO = -1002642790476
-ID_CANAL_H3 = -1002807164349
+ID_CANAL_H3 = -1002832746364
 DATA_VENCIMENTO = datetime(2025, 6, 28)
 
 
@@ -24,24 +23,26 @@ async def monitorar_mensagem(update: Update, context: ContextTypes.DEFAULT_TYPE)
     #         text="⛔ Esta versão demo expirou. Entre em contato para renovação."
     #     )
     #     return
-
-    mensagem = update.message.text
-    print(mensagem)
+    # if not update.message:
+    #     return
+    message = update.effective_message  # funciona para mensagem nova ou editada
+    mensagem = message.text or message.caption
+    print(f"Mensagem recebida do grupo - {message.chat.title}:\n{mensagem}\n Horário: {message.edit_date - timedelta(hours=3)}\n==================")
     # if "✖✖✖✖RED✖✖✖✖" in mensagem.upper():
     if re.search(r'RED', mensagem.upper()):
         print(f'RED: {re.search(r'RED', mensagem.upper())}')
         # print(f'RED II: {re.search(r'\bRED\b', mensagem.upper())}')
-        nome_autor = update.message.from_user.full_name or update.message.from_user.username or "Desconhecido"
-        # horario_brasilia = update.message.date - timedelta(hours=3)
-        horario_brasilia = (update.message.date or datetime.now()) - timedelta(hours=3)
-
+        nome_autor = message.from_user.full_name or message.from_user.username or "Desconhecido"
+        
+        horario_evento = message.edit_date
+        horario_brasilia = horario_evento - timedelta(hours=3)
         horario_envio = horario_brasilia.strftime("%d/%m/%Y %H:%M:%S")
 
         resposta = (
             f"🚨 *RED Detectado!*\n"
             f"👤 Autor: {nome_autor}\n"
             f"📅 Horário: {horario_envio}\n"
-            f"📣 Grupo: {update.message.chat.title}\n\n"
+            f"📣 Grupo: {message.chat.title}\n\n"
             f"📝 Mensagem:\n{mensagem}"
         )
 
@@ -71,10 +72,10 @@ async def monitorar_mensagem(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 def main():
-    # app = Application.builder().token('8012171445:AAFK183HpQe5DfDOUvduPUyxqvKThQ1NFlc').build()
+    app = Application.builder().token('8012171445:AAFK183HpQe5DfDOUvduPUyxqvKThQ1NFlc').build()
     # Token bot sinais red
-    app = Application.builder().token('7743797024:AAF9wnhFf7fEpdzauVY5xzJOXpcsm30IEkI').build()
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, monitorar_mensagem))
+    # app = Application.builder().token('7743797024:AAF9wnhFf7fEpdzauVY5xzJOXpcsm30IEkI').build()
+    app.add_handler(MessageHandler(filters.UpdateType.EDITED_MESSAGE, monitorar_mensagem))
     # app.add_handler(CommandHandler('inserir', inserir))
     print("🤖 Bot está rodando...")
     app.run_polling()
