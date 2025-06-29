@@ -1,6 +1,7 @@
 
 
 from datetime import datetime, timedelta
+import re
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, ContextTypes, CommandHandler
 
@@ -25,8 +26,11 @@ async def monitorar_mensagem(update: Update, context: ContextTypes.DEFAULT_TYPE)
     #     return
 
     mensagem = update.message.text
-    print(mensagem.split())
-    if "GREENS" in mensagem.upper():
+    print(mensagem)
+    # if "✖✖✖✖RED✖✖✖✖" in mensagem.upper():
+    if re.search(r'RED', mensagem.upper()):
+        print(f'RED: {re.search(r'RED', mensagem.upper())}')
+        # print(f'RED II: {re.search(r'\bRED\b', mensagem.upper())}')
         nome_autor = update.message.from_user.full_name or update.message.from_user.username or "Desconhecido"
         # horario_brasilia = update.message.date - timedelta(hours=3)
         horario_brasilia = (update.message.date or datetime.now()) - timedelta(hours=3)
