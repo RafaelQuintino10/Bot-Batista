@@ -1,0 +1,29 @@
+
+
+# 1. Atualização dos pacotes
+sudo apt update && sudo apt upgrade -y
+
+# 2. Instalação das bibliotecas
+sudo apt install python3 python3-pip python3-venv git -y
+
+# 3. Clona o repositório do bot do GitHub
+git clone https://github.com/RafaelQuintino10/Bot-Batista.git ~/bot-batista
+
+# 4. Entra na pasta 
+cd ~/bot-batista
+
+# 5. Cria e ativa ambiente virtual
+python3 -m venv venv
+source venv/bin/activate
+
+# 6. Instala bibliotecas necessárias
+pip install --upgrade pip
+pip install -r requirements.txt
+
+
+
+# 7. Inicia o bot com nohup (em segundo plano)
+nohup ~/bot-batista/venv/bin/python ~/bot-batista/bot_batista.py &
+
+# 8. Mensagem de sucesso
+echo "Bot iniciado com sucesso usando nohup! Verifique logs com: tail -f ~/bot-batista/nohup.out"
