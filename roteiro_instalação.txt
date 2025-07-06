@@ -21,7 +21,6 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 
-
 # 7. Inicia o bot com nohup (em segundo plano)
 nohup ~/bot-batista/venv/bin/python ~/bot-batista/bot_batista.py &
 

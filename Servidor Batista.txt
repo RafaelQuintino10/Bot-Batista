@@ -1,0 +1,2 @@
+acesso: ssh root@191.252.60.18
+senha: Locaweb@5572

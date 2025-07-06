@@ -22,11 +22,12 @@ async def monitorar_mensagem(update: Update, context: ContextTypes.DEFAULT_TYPE)
     #     return
     # if not update.message:
     #     return
-    message = update.effective_message  # funciona para mensagem nova ou editada
+    message = update.effective_message 
     mensagem = message.text or message.caption
     print(f"Mensagem recebida do grupo - {message.chat.title}:\n{mensagem}\n Horário: {message.edit_date - timedelta(hours=3)}\n==================")
-    if re.search(r'RED', mensagem.upper()):
-        print(f'RED: {re.search(r'RED', mensagem.upper())}')
+    if re.search(r'RED', mensagem.upper()) or re.search(r'✖{10}', mensagem):
+        print(f"RED: {re.search(r'RED', mensagem.upper())}")
+        print(f"✖✖✖✖✖✖: {re.search(r'✖{10}', mensagem.upper())}")
         nome_autor = message.from_user.full_name or message.from_user.username or "Desconhecido"
         horario_evento = message.edit_date
         horario_brasilia = horario_evento - timedelta(hours=3)
